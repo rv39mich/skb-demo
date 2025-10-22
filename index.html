@@ -194,6 +194,106 @@
             margin-bottom: 16px;
             font-size: 13px;
         }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #323232;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 90%;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a73e8;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
@@ -236,6 +336,27 @@
             <div>
                 <strong>Google Play Test Version</strong><br>
                 This demo shows the basic features of the SKB Pocket Money Bank app.
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <span class="material-icons" id="modal-icon">info</span>
+                </div>
+                <div class="modal-title" id="modal-title">Demo Mode</div>
+            </div>
+            <div class="modal-body" id="modal-body">
+                This feature is available in the full app.
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal()">OK</button>
             </div>
         </div>
     </div>
@@ -284,7 +405,35 @@
 
         function showTransaction(type) {
             const action = type === 'income' ? 'Deposit' : 'Withdrawal';
-            alert('Demo Mode: ' + action + ' would be processed here.\n\nIn the real app, a form would open.');
+            const icon = type === 'income' ? 'add_circle' : 'remove_circle';
+            showModal(
+                'Demo Mode: ' + action,
+                'This feature would process a ' + action.toLowerCase() + ' transaction.\n\nIn the real app, a form would open where you can enter the amount and description.',
+                icon
+            );
+        }
+
+        // Toast notification function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modal dialog function
+        function showModal(title, body, icon) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = body;
+            document.getElementById('modal-icon').textContent = icon || 'info';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
         }
 
         // FCM Token Handler for Android
@@ -296,7 +445,7 @@
         // Notification Handler
         function handleNotificationNavigation(type, url) {
             console.log('Notification Navigation (Demo):', type, url);
-            alert('Demo Mode: Navigation to ' + type + '\n\nIn the real app, you would be redirected to the appropriate page.');
+            showToast('Demo Mode: Navigation to ' + type + '\n\nIn the real app, you would be redirected to the appropriate page.');
         }
 
         // Initialize when page loads
@@ -314,7 +463,7 @@
             renderTransactions();
         }
         
-        console.log('SKB Demo loaded - Version 1.1');
+        console.log('SKB Demo loaded - Version 1.3');
     </script>
 </body>
 </html>
