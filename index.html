@@ -226,7 +226,9 @@
 
         <div class="card">
             <div class="section-title">Recent Transactions</div>
-            <div class="transaction-list" id="transactions"></div>
+            <div class="transaction-list" id="transactions">
+                <!-- Transactions will be inserted here by JavaScript -->
+            </div>
         </div>
 
         <div class="info-banner">
@@ -250,27 +252,39 @@
 
         function renderTransactions() {
             const container = document.getElementById('transactions');
-            container.innerHTML = transactions.map(t => `
-                <div class="transaction-item">
-                    <div class="transaction-icon ${t.type}">
-                        <span class="material-icons">
-                            ${t.type === 'income' ? 'arrow_downward' : 'arrow_upward'}
-                        </span>
+            
+            if (!container) {
+                console.error('Transaction container not found!');
+                return;
+            }
+            
+            console.log('Rendering ' + transactions.length + ' transactions');
+            
+            const html = transactions.map(t => {
+                const icon = t.type === 'income' ? 'arrow_downward' : 'arrow_upward';
+                const amountStr = (t.amount > 0 ? '+' : '') + '$' + Math.abs(t.amount).toFixed(2);
+                
+                return `
+                    <div class="transaction-item">
+                        <div class="transaction-icon ${t.type}">
+                            <span class="material-icons">${icon}</span>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">${t.title}</div>
+                            <div class="transaction-date">${t.date}</div>
+                        </div>
+                        <div class="transaction-amount ${t.type}">${amountStr}</div>
                     </div>
-                    <div class="transaction-details">
-                        <div class="transaction-title">${t.title}</div>
-                        <div class="transaction-date">${t.date}</div>
-                    </div>
-                    <div class="transaction-amount ${t.type}">
-                        ${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+            console.log('Transactions rendered successfully');
         }
 
         function showTransaction(type) {
             const action = type === 'income' ? 'Deposit' : 'Withdrawal';
-            alert(`Demo Mode: ${action} would be processed here.\n\nIn the real app, a form would open.`);
+            alert('Demo Mode: ' + action + ' would be processed here.\n\nIn the real app, a form would open.');
         }
 
         // FCM Token Handler for Android
@@ -282,12 +296,25 @@
         // Notification Handler
         function handleNotificationNavigation(type, url) {
             console.log('Notification Navigation (Demo):', type, url);
-            alert(`Demo Mode: Navigation to ${type}\n\nIn the real app, you would be redirected to the appropriate page.`);
+            alert('Demo Mode: Navigation to ' + type + '\n\nIn the real app, you would be redirected to the appropriate page.');
         }
 
-        // Initialize
-        renderTransactions();
-        console.log('SKB Demo loaded - Version 1.0');
+        // Initialize when page loads
+        console.log('SKB Demo - Starting initialization...');
+        
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM ready, rendering transactions');
+                renderTransactions();
+            });
+        } else {
+            // DOM already loaded
+            console.log('DOM already ready, rendering transactions immediately');
+            renderTransactions();
+        }
+        
+        console.log('SKB Demo loaded - Version 1.1');
     </script>
 </body>
 </html>
