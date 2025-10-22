@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKB Demo - Pocket Money Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background: #fafafa;
+            color: #202124;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .balance {
+            text-align: center;
+            padding: 24px 16px;
+        }
+
+        .balance-label {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 600;
+            color: #202124;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f1f3f4;
+            color: #202124;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .transaction-list {
+            margin-top: 8px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f3f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .transaction-icon.income {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .transaction-icon.expense {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .transaction-amount {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .transaction-amount.income {
+            color: #2e7d32;
+        }
+
+        .transaction-amount.expense {
+            color: #c62828;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #5f6368;
+        }
+
+        .info-banner {
+            background: #e8f0fe;
+            border-left: 4px solid #1a73e8;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .info-banner .material-icons {
+            color: #1a73e8;
+        }
+
+        .demo-note {
+            background: #fff3e0;
+            border-left: 4px solid #f57c00;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SKB Pocket Money Bank</h1>
+        <span class="material-icons">account_circle</span>
+    </div>
+
+    <div class="container">
+        <div class="demo-note">
+            <strong>Demo Mode</strong><br>
+            This is a demo version for Google Play testing. The actual app connects to your local server at home.
+        </div>
+
+        <div class="card balance">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount">$42.50</div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="showTransaction('income')">
+                    <span class="material-icons">add</span>
+                    Deposit
+                </button>
+                <button class="btn btn-secondary" onclick="showTransaction('expense')">
+                    <span class="material-icons">remove</span>
+                    Withdrawal
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Recent Transactions</div>
+            <div class="transaction-list" id="transactions"></div>
+        </div>
+
+        <div class="info-banner">
+            <span class="material-icons">info</span>
+            <div>
+                <strong>Google Play Test Version</strong><br>
+                This demo shows the basic features of the SKB Pocket Money Bank app.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo data
+        const transactions = [
+            { id: 1, title: 'Weekly Allowance', date: '10/20/2025', amount: 10.00, type: 'income' },
+            { id: 2, title: 'Candy Store', date: '10/19/2025', amount: -3.50, type: 'expense' },
+            { id: 3, title: 'Room Cleaned Bonus', date: '10/18/2025', amount: 5.00, type: 'income' },
+            { id: 4, title: 'Toy Purchase', date: '10/16/2025', amount: -15.00, type: 'expense' },
+            { id: 5, title: 'Homework Bonus', date: '10/15/2025', amount: 2.50, type: 'income' }
+        ];
+
+        function renderTransactions() {
+            const container = document.getElementById('transactions');
+            container.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-icon ${t.type}">
+                        <span class="material-icons">
+                            ${t.type === 'income' ? 'arrow_downward' : 'arrow_upward'}
+                        </span>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">${t.title}</div>
+                        <div class="transaction-date">${t.date}</div>
+                    </div>
+                    <div class="transaction-amount ${t.type}">
+                        ${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showTransaction(type) {
+            const action = type === 'income' ? 'Deposit' : 'Withdrawal';
+            alert(`Demo Mode: ${action} would be processed here.\n\nIn the real app, a form would open.`);
+        }
+
+        // FCM Token Handler for Android
+        function saveFCMToken(token) {
+            console.log('FCM Token received (Demo):', token);
+            localStorage.setItem('fcm_token', token);
+        }
+
+        // Notification Handler
+        function handleNotificationNavigation(type, url) {
+            console.log('Notification Navigation (Demo):', type, url);
+            alert(`Demo Mode: Navigation to ${type}\n\nIn the real app, you would be redirected to the appropriate page.`);
+        }
+
+        // Initialize
+        renderTransactions();
+        console.log('SKB Demo loaded - Version 1.0');
+    </script>
+</body>
+</html>
